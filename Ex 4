@@ -1,0 +1,16 @@
+-- 4
+CREATE OR REPLACE FUNCTION verifica_data_cirurgia() 
+RETURNS TRIGGER 
+AS $$
+BEGIN
+    IF NEW.data > CURRENT_DATE THEN
+        RAISE EXCEPTION 'Não é possível agendar cirurgias para datas futuras.';
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_verifica_data_cirurgia 
+BEFORE INSERT ON public.cirurgia
+FOR EACH ROW 
+EXECUTE FUNCTION verifica_data_cirurgia();

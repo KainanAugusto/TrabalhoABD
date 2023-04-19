@@ -1,0 +1,147 @@
+
+--CRIAÇÃO DO BANCO DE DADOS
+-- Database: T1ABD
+
+-- DROP DATABASE IF EXISTS "T1ABD";
+
+CREATE DATABASE "T1ABD"
+    WITH
+    OWNER = postgres
+    ENCODING = 'UTF8'
+    LC_COLLATE = 'pt_BR.UTF-8'
+    LC_CTYPE = 'pt_BR.UTF-8'
+    TABLESPACE = pg_default
+    CONNECTION LIMIT = -1
+    IS_TEMPLATE = False;
+
+
+--CRIAÇÃO DAS TABELAS
+--CRIAÇÃO DA TABELA 'ATENDE'
+-- Table: public.atende
+
+-- DROP TABLE IF EXISTS public.atende;
+
+--SELECT nextval('id_atende_id_atende_seq')
+CREATE SEQUENCE id_atende_id_atende_seq;
+
+CREATE TABLE IF NOT EXISTS public.atende
+(
+    id_atende integer NOT NULL DEFAULT nextval('id_atende_id_atende_seq'),
+    id_paciente integer NOT NULL,
+    id_medico integer NOT NULL,
+    data date NOT NULL,
+    CONSTRAINT id_atende_pkey PRIMARY KEY (id_atende)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.atende
+    OWNER to postgres;
+
+
+--CRIAÇÃO DA TABELA CIRURGIA
+-- Table: public.cirurgia
+
+-- DROP TABLE IF EXISTS public.cirurgia;
+--SELECT nextval('cirurgia_id_cirurgia_seq')
+
+CREATE SEQUENCE cirurgia_id_cirurgia_seq;
+CREATE TABLE IF NOT EXISTS public.cirurgia
+(
+    id_cirurgia integer NOT NULL DEFAULT nextval('cirurgia_id_cirurgia_seq'),
+    codigo character varying COLLATE pg_catalog."default",
+    data date,
+    descricao character varying COLLATE pg_catalog."default",
+    id_paciente integer,
+    CONSTRAINT cirurgia_pkey PRIMARY KEY (id_cirurgia)
+)
+
+TABLESPACE pg_default;
+
+
+
+--CRIAÇÃO DA TABELA MEDICO
+-- Table: public.medico
+
+-- DROP TABLE IF EXISTS public.medico;
+--SELECT nextval('medico_id_medico_seq')
+
+CREATE SEQUENCE medico_id_medico_seq;
+CREATE TABLE IF NOT EXISTS public.medico
+(
+    med_id_medico integer NOT NULL DEFAULT nextval('medico_id_medico_seq'),
+    med_crm character varying COLLATE pg_catalog."default",
+    med_nome character varying COLLATE pg_catalog."default",
+    med_especialidade character varying COLLATE pg_catalog."default",
+    CONSTRAINT medico_pkey PRIMARY KEY (med_id_medico)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.medico
+    OWNER to postgres;
+
+
+
+--CRIAÇÃO DA TABELA PACIENTE
+-- Table: public.paciente
+
+-- DROP TABLE IF EXISTS public.paciente;
+--SELECT nextval('paciente_id_paciente_seq');
+
+CREATE SEQUENCE paciente_id_paciente_seq;
+CREATE TABLE IF NOT EXISTS public.paciente
+(
+    pac_id_paciente integer NOT NULL DEFAULT nextval('paciente_id_paciente_seq'),
+    pac_codigo character varying COLLATE pg_catalog."default",
+    pac_nome character varying COLLATE pg_catalog."default",
+    pac_idade integer,
+    CONSTRAINT paciente_pkey PRIMARY KEY (pac_id_paciente)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.paciente
+    OWNER to postgres;
+
+
+
+
+--INSERÇÃO DE DADOS
+--Inserindo na tabela paciente
+
+INSERT INTO public.paciente(
+	pac_id_paciente, pac_codigo, pac_nome, pac_idade)
+	VALUES (default, 'p1', 'Joao', 12),
+			(default, 'p2', 'Maria', 38),
+			(default, 'p3', 'Pedro', 21),
+			(default,'p4', 'Antônio', 29);
+			
+--Inserindo na tabela medico
+INSERT INTO public.medico(
+	med_id_medico, med_crm, med_nome, med_especialidade)
+	VALUES (default, 'm1', 'Marcos', 'Oftalmologista'),
+			(default, 'm2', 'Tereza', 'Clínico Geral'),
+			(default, 'm3', 'Paulo', 'Pediatra'),
+			(default, 'm4', 'João', 'Clinico Geral');
+
+--Inserindo na tabela atende
+INSERT INTO public.atende(
+	id_atende, id_paciente, id_medico, data)
+	VALUES (default, 1, 2, '09/02/2008'),
+			(default, 2, 1, '26/03/2006'),
+			(default, 3, 1, '11/09/2003'),
+			(default, 1, 4, '13/10/2007'),
+			(default, 2, 2, '08/05/2008');
+
+
+--Inserindo na tabela cirurgia
+INSERT INTO public.cirurgia(
+	id_cirurgia, codigo, data, descricao, id_paciente)
+	VALUES (default, 'c1', '25/07/2008', 'Apendicite', 1),
+			(default, 'c2', '07/02/2001', 'Retirada de cálculo renal', 2),
+			(default, 'c3', '14/11/2007', 'Unha encravada', 3),
+			(default, 'c4', '23/01/2008', 'Implante de Silicone', 2);
+
+
+

@@ -1,0 +1,26 @@
+CREATE OR REPLACE FUNCTION desempenho_medicos(
+    p_data_inicial DATE,
+    p_data_final DATE
+)
+RETURNS SETOF RECORD
+AS $$
+DECLARE
+    v_medico RECORD;
+BEGIN
+    FOR v_medico IN
+        SELECT med_nome, COUNT(*) as quantidade
+        FROM public.atende
+        INNER JOIN public.medico ON atende.id_medico = medico.med_id_medico
+        WHERE atende.data >= p_data_inicial AND atende.data <= p_data_final
+        GROUP BY med_nome
+    LOOP
+        RETURN NEXT (v_medico.med_nome, v_medico.quantidade);
+    END LOOP;
+
+    RETURN;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+SELECT * FROM desempenho_medicos('2000-01-01', '2022-12-31') as (Nome_Do_Medico varchar, Quantidade_De_Atendimentos bigint);

@@ -1,0 +1,27 @@
+CREATE OR REPLACE FUNCTION criar_cirurgia(
+    IN p_cod_cirurgia VARCHAR(50),
+    IN p_cod_paciente VARCHAR(50),
+    IN p_data_cirurgia DATE,
+    IN p_descricao_cirurgia VARCHAR(500)
+)
+RETURNS VOID
+AS $$
+DECLARE
+    v_id_paciente INTEGER;
+BEGIN
+    -- verifica se o paciente existe
+    SELECT pac_id_paciente INTO v_id_paciente
+    FROM public.paciente
+    WHERE pac_codigo = p_cod_paciente;
+
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Paciente não encontrado';
+    END IF;
+
+    -- insere a nova cirurgia
+    INSERT INTO public.cirurgia (codigo, data, descricao, id_paciente)
+    VALUES (p_cod_cirurgia, p_data_cirurgia, p_descricao_cirurgia, v_id_paciente);
+END;
+$$ LANGUAGE plpgsql;
+
+--SELECT public.criar_cirurgia('c5', 'p3', '8/04/2023', 'Redução de estômago');
